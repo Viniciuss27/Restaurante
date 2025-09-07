@@ -1,0 +1,200 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color:thistle;
+}
+
+#principal {
+    display: flex;/* deixa os conteiners flexiveis*/
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;/*separação dos containers*/
+    
+}
+
+
+form{
+    float: left;/*flutuar*/
+	margin: 1%;
+	border-radius: 20px; /*arrendondamento da borda*/
+	display: block; /* para não se mover*/
+    box-sizing: border-box;
+    padding: 20px;
+    width: 40%;
+    backdrop-filter: brightness(60%); /*escurecer o fundo pra ficar com a cor de fundo*/
+    /*background-image:url(../imagens/logo.jpeg);
+    background-size: cover; /*pra imagem ocupa todo espaço */
+    box-shadow: 0px 0px 5px rgba(0,0, 0.3); /*sombra*/
+    flex-direction: column;
+    display: flex;
+    gap: 15px; /*espaçamento entresas perguntas*/ 
+   }
+
+.card {
+    margin-bottom: 6%;
+    height: 150px;/* vertical*/
+    width: 170px; /*horizontal*/
+	border-radius: 20px; /*arrendondamento da borda*/
+    box-sizing: border-box;
+    backdrop-filter: brightness(90%); /*escurecer o fundo pra ficar com a cor de fundo*/
+    box-shadow: 0px 0px 5px rgba(0,0, 0.5); /*sombra*/
+}
+
+.table {
+    float: right; /* pra flutuar pro lado*/
+	border-radius: 8px; /*arrendondamento da borda*/
+	display: block; /* as letras ficam compactada*/
+    padding:10px;
+    width: 30%; /*o meio da tabela*/
+    background-color: goldenrod; /*cor da tabela*/
+    box-shadow: 0px 0px 5px rgba(0,0, 0.3); /*sombra*/
+    margin: 1%;
+}
+
+input, select{
+    background: linear-gradient(DeepSkyBlue,Thistle) ; /*cor da caixa da pergunta*/
+    height: 25px; /*tamanho da caixa de pergunta*/
+    width: 100%;/*largura em relação a caixa*/
+    border-radius: 5px; /*arredondamento*/
+    border: none;/*tira a borda*/
+    box-shadow: 0px 0px 5px rgba(0,0, 0.3); /*sombra*/
+    color:black ; /*cor da letra*/
+}
+
+header{
+  background: linear-gradient(violet,silver) ; /*cor da caixa da pergunta*/
+	padding: 15px;
+	text-align: center;
+    backdrop-filter: brightness(90%); /*escurecer o fundo pra ficar com a cor de fundo*/
+    box-shadow: 0px 0px 5px rgba(0,0, 0.5); /*sombra*/
+    border-radius: 20px; /*arrendondamento da borda*/
+}
+
+.marca_horario {
+	background: linear-gradient(violet,thistle) ; /*cor da caixa da pergunta*/
+    height: 28px; /*tamanho da caixa de pergunta*/
+    width: 80%;/*largura em relação a caixa*/
+    border-radius: 7px; /*arredondamento*/
+    text-align: center; /*texto no centro*/
+    margin: 0 auto;  /*centralizar*/
+    border: none;/*tira a borda*/
+    box-shadow: 0px 0px 5px rgba(0,0, 0.3); /*sombra*/
+    color:black ; /*cor da letra*/
+    font-size: 23px; /* tamanho da fonte*/
+}
+
+#rodape {
+	clear: both;/*limpa do float*/
+	text-align: center;/*texto centralizado*/
+	padding:2px;/*espaçamento*/
+	background: linear-gradient(DeepSkyBlue,Thistle);/*cor de fundo... com duas cores*/
+	font-size: 1.3em;/*tamanho da letra*/
+	border-radius: 5px;/*arredondamento da borda*/
+    color:rgb(47, 8, 138);/*cor da letra*/
+}
+
+span{
+    color: red;
+    font-size: 110%;
+    font-weight: 700; /* largura da letra*/
+}
+
+card, button:hover{
+    transform: rotate(1800deg);/*pra rodar*/
+    transition: 3s;
+
+}
+
+tr:hover{ /*ao passar o mouse*/
+    text-decoration: none;/*tirando a linha do link*/
+    color: white; /*cor da letra*/
+    background: linear-gradient(red,black); /*cor da caixa da pergunta*/
+}
+
+tr{
+	text-transform: uppercase; /*letras em negrito e maiusculas*/
+	font-size: 80%; /*tamanho da letra*/
+	letter-spacing: 0.1em; /*espaçamento entre as letras*/
+    color: black
+}
+
+
+#whatsapp-link {
+    display: block;
+    margin-top: 20px;}
+
+#arroz:hover{
+    background-image:url(../imagens/arroz.png);
+    background-size: cover; /*pra imagem ocupa todo espaço */
+    transform: scale(1.2);/*pra aumentar de tamanho*/
+    transition: 2s;
+}
+
+#carne_ensopada:hover{
+    background-image:url(../imagens/carne_ensopada.png);
+    background-size: cover; /*pra imagem ocupa todo espaço */
+    transform: scale(1.2);/*pra aumentar de tamanho*/
+    transition: 2s;
+}
+
+#churrasco:hover{
+    background-image:url(../imagens/churrasco.jpeg);
+    background-size: cover ; /*pra imagem ocupa todo espaço */
+    transform: scale(1.2);/*pra aumentar de tamanho*/
+    transition: 2s;
+}
+
+#costela:hover{
+    background-image:url(../imagens/costela.png);
+    background-size: cover; /*pra imagem ocupa todo espaço */
+    transform: scale(1.2);/*pra aumentar de tamanho*/
+    transition: 2s;
+}
+
+#feijao_tropeiro:hover{
+    background-image:url(../imagens/feijao_trompeiro.png);
+    background-size: cover; /*pra imagem ocupa todo espaço */
+    transform: scale(1.2);/*pra aumentar de tamanho*/
+    transition: 2s;
+}
+
+#feijao:hover{
+    background-image:url(../imagens/feijao.png);
+    background-size: cover; /*pra imagem ocupa todo espaço */
+    transform: scale(1.2);/*pra aumentar de tamanho*/
+    transition: 2s;
+}
+
+#frango_assado:hover{
+    background-image:url(../imagens/frango_assado.png);
+    background-size: cover; /*pra imagem ocupa todo espaço */
+    transform: scale(1.2);/*pra aumentar de tamanho*/
+    transition: 2s;
+}
+
+#frango_ensopado:hover{
+    background-image:url(../imagens/frango_ensopado.png);
+    background-size: cover; /*pra imagem ocupa todo espaço */
+    transform: scale(1.2);/*pra aumentar de tamanho*/
+    transition: 2s;
+}
+
+#macarrao_parmegiana:hover{
+    background-image:url(../imagens/macarrao.jpeg);
+    background-size: cover; /*pra imagem ocupa todo espaço */
+    transform: scale(1.2);/*pra aumentar de tamanho*/
+    transition: 2s;
+}
+
+#macarrao_alho:hover{
+    background-image:url(../imagens/macarrão_alho.jpg);
+    background-size: cover; /*pra imagem ocupa todo espaço */
+    transform: scale(1.2);/*pra aumentar de tamanho*/
+    transition: 2s;
+}
+
+#salada:hover{
+    background-image:url(../imagens/salada_simples.png);
+    background-size: cover; /*pra imagem ocupa todo espaço */
+    transform: scale(1.2);/*pra aumentar de tamanho*/
+    transition: 2s;
+}
