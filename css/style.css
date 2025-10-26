@@ -1,7 +1,8 @@
 body {
     font-family: Arial, sans-serif;
-    background-color:thistle;
-}
+    background-image:url(../imagens/fundo_total.jpg);
+    background-size: cover; /*pra imagem ocupa todo espaço */
+    }
 
 #principal {
     display: flex;/* deixa os conteiners flexiveis*/
@@ -20,9 +21,7 @@ form{
     box-sizing: border-box;
     padding: 20px;
     width: 40%;
-    backdrop-filter: brightness(60%); /*escurecer o fundo pra ficar com a cor de fundo*/
-    /*background-image:url(../imagens/logo.jpeg);
-    background-size: cover; /*pra imagem ocupa todo espaço */
+    backdrop-filter: brightness(40%); /*escurecer o fundo pra ficar com a cor de fundo*/
     box-shadow: 0px 0px 5px rgba(0,0, 0.3); /*sombra*/
     flex-direction: column;
     display: flex;
@@ -35,8 +34,8 @@ form{
     width: 170px; /*horizontal*/
 	border-radius: 20px; /*arrendondamento da borda*/
     box-sizing: border-box;
-    backdrop-filter: brightness(90%); /*escurecer o fundo pra ficar com a cor de fundo*/
-    box-shadow: 0px 0px 5px rgba(0,0, 0.5); /*sombra*/
+    backdrop-filter: brightness(50%); /*escurecer o fundo pra ficar com a cor de fundo*/
+    box-shadow: 0px 0px 5px rgba(0,0, 0.7); /*sombra*/
 }
 
 .table {
@@ -45,32 +44,32 @@ form{
 	display: block; /* as letras ficam compactada*/
     padding:10px;
     width: 30%; /*o meio da tabela*/
-    background-color: goldenrod; /*cor da tabela*/
-    box-shadow: 0px 0px 5px rgba(0,0, 0.3); /*sombra*/
+    background-color:gray; /*cor da tabela*/
+    box-shadow: 0px 0px 5px rgba(0,0, 0.5); /*sombra*/
     margin: 1%;
 }
 
 input, select{
-    background: linear-gradient(DeepSkyBlue,Thistle) ; /*cor da caixa da pergunta*/
+    background-color: wheat; /*cor da caixa da pergunta*/
     height: 25px; /*tamanho da caixa de pergunta*/
     width: 100%;/*largura em relação a caixa*/
     border-radius: 5px; /*arredondamento*/
     border: none;/*tira a borda*/
-    box-shadow: 0px 0px 5px rgba(0,0, 0.3); /*sombra*/
+    box-shadow: 0px 0px 5px rgba(0,0, 0.6); /*sombra*/
     color:black ; /*cor da letra*/
 }
 
 header{
-  background: linear-gradient(violet,silver) ; /*cor da caixa da pergunta*/
+  background: linear-gradient(wheat,silver) ; /*cor da caixa da pergunta*/
 	padding: 15px;
 	text-align: center;
-    backdrop-filter: brightness(90%); /*escurecer o fundo pra ficar com a cor de fundo*/
+    backdrop-filter: brightness(10%); /*escurecer o fundo pra ficar com a cor de fundo*/
     box-shadow: 0px 0px 5px rgba(0,0, 0.5); /*sombra*/
     border-radius: 20px; /*arrendondamento da borda*/
 }
 
 .marca_horario {
-	background: linear-gradient(violet,thistle) ; /*cor da caixa da pergunta*/
+	background: linear-gradient(wheat,silver) ; /*cor da caixa da pergunta*/
     height: 28px; /*tamanho da caixa de pergunta*/
     width: 80%;/*largura em relação a caixa*/
     border-radius: 7px; /*arredondamento*/
@@ -86,20 +85,21 @@ header{
 	clear: both;/*limpa do float*/
 	text-align: center;/*texto centralizado*/
 	padding:2px;/*espaçamento*/
-	background: linear-gradient(DeepSkyBlue,Thistle);/*cor de fundo... com duas cores*/
+	backdrop-filter: brightness(20%); /*escurecer o fundo pra ficar com a cor de fundo*/
+    box-shadow: 0px 0px 5px rgba(0,0, 0.5); /*sombra*/
 	font-size: 1.3em;/*tamanho da letra*/
 	border-radius: 5px;/*arredondamento da borda*/
-    color:rgb(47, 8, 138);/*cor da letra*/
+    color:white;/*cor da letra*/
 }
 
 span{
-    color: red;
+    color: wheat;
     font-size: 110%;
     font-weight: 700; /* largura da letra*/
 }
 
 card, button:hover{
-    transform: rotate(1800deg);/*pra rodar*/
+    transform: rotate(1800deg);/*pra rodar o botão*/
     transition: 3s;
 
 }
@@ -122,79 +122,86 @@ tr{
     display: block;
     margin-top: 20px;}
 
-#arroz:hover{
+#arroz{
     background-image:url(../imagens/arroz.png);
     background-size: cover; /*pra imagem ocupa todo espaço */
-    transform: scale(1.2);/*pra aumentar de tamanho*/
-    transition: 2s;
 }
 
-#carne_ensopada:hover{
+#carne_ensopada{
     background-image:url(../imagens/carne_ensopada.png);
     background-size: cover; /*pra imagem ocupa todo espaço */
-    transform: scale(1.2);/*pra aumentar de tamanho*/
-    transition: 2s;
 }
 
-#churrasco:hover{
+#churrasco{
     background-image:url(../imagens/churrasco.jpeg);
     background-size: cover ; /*pra imagem ocupa todo espaço */
-    transform: scale(1.2);/*pra aumentar de tamanho*/
-    transition: 2s;
 }
 
-#costela:hover{
+#costela{
     background-image:url(../imagens/costela.png);
     background-size: cover; /*pra imagem ocupa todo espaço */
-    transform: scale(1.2);/*pra aumentar de tamanho*/
-    transition: 2s;
 }
 
-#feijao_tropeiro:hover{
+#feijao_tropeiro{
     background-image:url(../imagens/feijao_trompeiro.png);
     background-size: cover; /*pra imagem ocupa todo espaço */
-    transform: scale(1.2);/*pra aumentar de tamanho*/
-    transition: 2s;
 }
 
-#feijao:hover{
+#feijao{
     background-image:url(../imagens/feijao.png);
     background-size: cover; /*pra imagem ocupa todo espaço */
-    transform: scale(1.2);/*pra aumentar de tamanho*/
-    transition: 2s;
+   
 }
 
-#frango_assado:hover{
+#frango_assado{
     background-image:url(../imagens/frango_assado.png);
     background-size: cover; /*pra imagem ocupa todo espaço */
-    transform: scale(1.2);/*pra aumentar de tamanho*/
-    transition: 2s;
 }
 
-#frango_ensopado:hover{
+#frango_ensopado{
     background-image:url(../imagens/frango_ensopado.png);
     background-size: cover; /*pra imagem ocupa todo espaço */
-    transform: scale(1.2);/*pra aumentar de tamanho*/
-    transition: 2s;
+   
 }
 
-#macarrao_parmegiana:hover{
+#macarrao_parmegiana{
     background-image:url(../imagens/macarrao.jpeg);
     background-size: cover; /*pra imagem ocupa todo espaço */
-    transform: scale(1.2);/*pra aumentar de tamanho*/
-    transition: 2s;
 }
 
-#macarrao_alho:hover{
+#macarrao_alho{
     background-image:url(../imagens/macarrão_alho.jpg);
     background-size: cover; /*pra imagem ocupa todo espaço */
-    transform: scale(1.2);/*pra aumentar de tamanho*/
-    transition: 2s;
 }
 
-#salada:hover{
+#salada{
     background-image:url(../imagens/salada_simples.png);
     background-size: cover; /*pra imagem ocupa todo espaço */
-    transform: scale(1.2);/*pra aumentar de tamanho*/
-    transition: 2s;
 }
+
+#carne_ensopada:hover , #arroz:hover , #churrasco:hover, #costela:hover,
+#feijao_tropeiro:hover, #frango_assado:hover, #frango_ensopado:hover, #feijao:hover,
+#macarrao_parmegiana:hover, #macarrao_alho:hover, #salada:hover{
+/* pra quando passar o mouse*/
+ transform: scale(1.2);/*pra aumentar de tamanho*/
+ transition: 2s;/*tamanhoque vai aumentar*/
+ color: red;/*cor da letra*/
+}
+
+#carne_ensopada , #arroz , #churrasco, #costela,
+#feijao_tropeiro, #frango_assado, #frango_ensopado, #feijao,
+#macarrao_parmegiana, #macarrao_alho, #salada{
+color: gold;
+}
+
+h4 , h5{
+    backdrop-filter: brightness(35%); /*escurecer o fundo pra ficar com a cor de fundo*/
+    box-shadow: 0px 0px 5px rgba(0,0, 0.5); /*sombra*/
+	font-size: 1.3em;/*tamanho da letra*/
+    color: gold;
+    border-radius: 10px;
+    text-align: center;
+}
+
+
+

@@ -67,7 +67,7 @@ function updateWhatsAppLink() {
     
     // Formatar a URL do WhatsApp com o pedido
     const encodedMessage = encodeURIComponent(message);
-    whatsappLink.href = `https://wa.me/27995782128?text=${encodedMessage}`;
+    whatsappLink.href = `https://wa.me/27997169402?text=${encodedMessage}`;
     
     // Exibir o botão de finalizar pedido ao escolher um pedido
     whatsappLink.style.display = 'inline-block';
