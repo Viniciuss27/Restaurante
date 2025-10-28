@@ -4,23 +4,25 @@ body {
     background-size: cover; /*pra imagem ocupa todo espaço */
     }
 
-#principal {
+#principal{
     display: flex;/* deixa os conteiners flexiveis*/
     justify-content: center;
     flex-wrap: wrap;
     gap: 15px;/*separação dos containers*/
-    
 }
 
+.final{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40%;/*separação dos containers*/
+}
 
 form{
-    float: left;/*flutuar*/
 	margin: 1%;
 	border-radius: 20px; /*arrendondamento da borda*/
-	display: block; /* para não se mover*/
     box-sizing: border-box;
-    padding: 20px;
-    width: 40%;
+    padding: 2%;
+    width: 350px;
     backdrop-filter: brightness(40%); /*escurecer o fundo pra ficar com a cor de fundo*/
     box-shadow: 0px 0px 5px rgba(0,0, 0.3); /*sombra*/
     flex-direction: column;
@@ -39,19 +41,18 @@ form{
 }
 
 .table {
-    float: right; /* pra flutuar pro lado*/
 	border-radius: 8px; /*arrendondamento da borda*/
-	display: block; /* as letras ficam compactada*/
-    padding:10px;
-    width: 30%; /*o meio da tabela*/
+    padding:5%;
+    width:150px;
     background-color:gray; /*cor da tabela*/
     box-shadow: 0px 0px 5px rgba(0,0, 0.5); /*sombra*/
     margin: 1%;
+    text-align: center;
 }
 
 input, select{
     background-color: wheat; /*cor da caixa da pergunta*/
-    height: 25px; /*tamanho da caixa de pergunta*/
+    height: 30%; /*tamanho da caixa de pergunta*/
     width: 100%;/*largura em relação a caixa*/
     border-radius: 5px; /*arredondamento*/
     border: none;/*tira a borda*/
@@ -70,7 +71,7 @@ header{
 
 .marca_horario {
 	background: linear-gradient(wheat,silver) ; /*cor da caixa da pergunta*/
-    height: 28px; /*tamanho da caixa de pergunta*/
+    height: 28%; /*tamanho da caixa de pergunta*/
     width: 80%;/*largura em relação a caixa*/
     border-radius: 7px; /*arredondamento*/
     text-align: center; /*texto no centro*/
@@ -195,7 +196,7 @@ color: gold;
 }
 
 h4 , h5{
-    backdrop-filter: brightness(35%); /*escurecer o fundo pra ficar com a cor de fundo*/
+    backdrop-filter: brightness(65%); /*escurecer o fundo pra ficar com a cor de fundo*/
     box-shadow: 0px 0px 5px rgba(0,0, 0.5); /*sombra*/
 	font-size: 1.3em;/*tamanho da letra*/
     color: gold;
