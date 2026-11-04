@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: monolito
+  
+  profiles:
+    active: dev
