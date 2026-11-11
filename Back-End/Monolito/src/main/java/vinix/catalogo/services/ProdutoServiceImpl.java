@@ -1,19 +1,24 @@
 package vinix.catalogo.services;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vinix.catalogo.dtos.request.ProdutoRequestDTO;
 import vinix.catalogo.dtos.response.ProdutoResponseDTO;
 import vinix.catalogo.entities.Categoria;
 import vinix.catalogo.entities.Produto;
-import vinix.catalogo.exceptions.JaExistenteException;
 import vinix.catalogo.exceptions.NaoExistenteException;
 import vinix.catalogo.mappers.ProdutoMapper;
 import vinix.catalogo.repositories.CategoriaRepository;
 import vinix.catalogo.repositories.ProdutoRepository;
 
 import java.util.List;
+
+import static vinix.catalogo.services.ProdutoSpecification.categoriaContem;
+import static vinix.catalogo.services.ProdutoSpecification.descricaoContem;
+import static vinix.catalogo.services.ProdutoSpecification.disponivelIgual;
+import static vinix.catalogo.services.ProdutoSpecification.nomeContem;
 
 @Service
 @RequiredArgsConstructor
@@ -25,38 +30,19 @@ public class ProdutoServiceImpl implements ProdutoService {
 
   @Override
   @Transactional(readOnly = true)
-  public List<ProdutoResponseDTO> listar() {
-    return repository.findAll().stream().map(mapper::response).toList();
-  }
-
-  @Override
-  @Transactional(readOnly = true)
-  public List<ProdutoResponseDTO> listarDisponiveis() {
-    return repository.findAllByDisponivelTrue().stream().map(mapper::response).toList();
-  }
-
-  @Override
-  @Transactional(readOnly = true)
-  public List<ProdutoResponseDTO> listarCategoriaNome(String categoria) {
-    return repository.findByCategoriaNomeContainingIgnoreCase(categoria).stream().map(mapper::response).toList();
-  }
-
-  @Override
-  @Transactional(readOnly = true)
   public ProdutoResponseDTO buscarId(Long id) {
     return mapper.response(verificaId(id));
   }
 
   @Override
   @Transactional(readOnly = true)
-  public List<ProdutoResponseDTO> listarDescricao(String descricao) {
-    return repository.findByDescricaoContainingIgnoreCase(descricao).stream().map(mapper::response).toList();
-  }
+  public List<ProdutoResponseDTO> buscar(String nome, String descricao, String categoria, Boolean disponivel) {
 
-  @Override
-  @Transactional(readOnly = true)
-  public List<ProdutoResponseDTO> listarNome(String nome) {
-    return repository.findByNomeContainingIgnoreCase(nome).stream().map(mapper::response).toList();
+    Specification<Produto> spec = Specification.allOf(
+        nomeContem(nome), descricaoContem(descricao),
+        categoriaContem(categoria), disponivelIgual(disponivel));
+
+    return repository.findAll(spec).stream().map(mapper::response).toList();
   }
 
   @Override
@@ -81,16 +67,8 @@ public class ProdutoServiceImpl implements ProdutoService {
   }
 
   @Override @Transactional
-  public void alterarDisponibilidade(Long id, boolean disponivel) {
+  public void alterarDisponibilidade(Long id, Boolean disponivel) {
     verificaId(id).setDisponivel(disponivel);
-  }
-
-  private Produto verificaIdIndisponivel(Long id) {
-    Produto verificado = verificaId(id);
-    if (verificado.isDisponivel()) {
-      throw new JaExistenteException(id + " -> O produto ja esta disponivel");
-    }
-    return verificado;
   }
 
   private Produto verificaId(Long id) {

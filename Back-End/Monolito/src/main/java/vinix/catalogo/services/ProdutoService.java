@@ -7,22 +7,14 @@ import java.util.List;
 
 public interface ProdutoService {
 
-  List<ProdutoResponseDTO> listar();
-
-  List<ProdutoResponseDTO> listarDisponiveis();
-
-  List<ProdutoResponseDTO> listarCategoriaNome(String nome);
-
   ProdutoResponseDTO buscarId(Long id);
 
-  List<ProdutoResponseDTO> listarDescricao(String descricao);
-
-  List<ProdutoResponseDTO> listarNome(String nome);
+  List<ProdutoResponseDTO> buscar(String nome, String descricao, String categoria, Boolean disponivelIgual);
 
   ProdutoResponseDTO criar(ProdutoRequestDTO produto);
 
   ProdutoResponseDTO atualizar(Long id, ProdutoRequestDTO produto);
 
-  void alterarDisponibilidade(Long id, boolean disponivel);
+  void alterarDisponibilidade(Long id, Boolean disponivel);
 
 }
