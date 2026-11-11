@@ -1,8 +1,6 @@
 package vinix.catalogo.dtos.response;
 
-import java.math.BigDecimal;
-
-public record ProdutoResponse(
+public record ProdutoResponseDTO(
     Long id,
     String nome,
     String descricao,
