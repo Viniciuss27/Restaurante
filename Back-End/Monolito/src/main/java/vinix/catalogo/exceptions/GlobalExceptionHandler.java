@@ -27,9 +27,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
   @Override
-  protected ResponseEntity<Object> handleMethodArgumentNotValid(
-      MethodArgumentNotValidException ex, HttpHeaders headers,
-      HttpStatusCode status, WebRequest request) {
+  public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 
     ProblemDetail problema = ProblemDetail.forStatusAndDetail(
         BAD_REQUEST, "Um ou mais campos possuem valores inválidos");
