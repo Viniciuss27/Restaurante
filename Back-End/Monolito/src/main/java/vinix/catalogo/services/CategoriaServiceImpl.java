@@ -6,11 +6,11 @@ import org.springframework.transaction.annotation.Transactional;
 import vinix.catalogo.dtos.request.CategoriaRequestDTO;
 import vinix.catalogo.dtos.response.CategoriaResponseDTO;
 import vinix.catalogo.entities.Categoria;
-import vinix.catalogo.exceptions.JaExistenteException;
-import vinix.catalogo.exceptions.NaoExistenteException;
 import vinix.catalogo.mappers.CategoriaMapper;
 import vinix.catalogo.repositories.CategoriaRepository;
 import vinix.catalogo.repositories.ProdutoRepository;
+import vinix.compartilhado.excecoes.ConflitoException;
+import vinix.compartilhado.excecoes.NaoExistenteException;
 
 import java.util.List;
 
@@ -43,7 +43,7 @@ public class CategoriaServiceImpl implements CategoriaService {
   public CategoriaResponseDTO criar(CategoriaRequestDTO request) {
 
     if (repository.existsByNomeIgnoreCase(request.nome())) {
-      throw new JaExistenteException(request.nome() + " -> categoria já existe");
+      throw new ConflitoException(request.nome() + " -> categoria já existe");
     }
 
     Categoria categoria = mapper.request(request);
@@ -55,7 +55,7 @@ public class CategoriaServiceImpl implements CategoriaService {
     Categoria verificado = verificaId(id);
 
     if (repository.existsByNomeIgnoreCaseAndIdNot(request.nome(), id)) {
-      throw new JaExistenteException(request.nome() + " -> categoria já existe");
+      throw new ConflitoException(request.nome() + " -> categoria já existe");
     }
 
     verificado.setNome(request.nome());
@@ -75,7 +75,7 @@ public class CategoriaServiceImpl implements CategoriaService {
 
   private void verificaProdutoExistente(Long categoriaId) {
     if (produtoRepository.existsByCategoriaId(categoriaId)) {
-      throw new JaExistenteException(
+      throw new ConflitoException(
           "Não foi possível excluir: existem produtos associados a essa categoria"
       );
     }

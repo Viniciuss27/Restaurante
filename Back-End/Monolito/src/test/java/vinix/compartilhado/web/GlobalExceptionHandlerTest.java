@@ -1,4 +1,4 @@
-package vinix.catalogo.exceptions;
+package vinix.compartilhado.web;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -13,18 +13,33 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.context.request.ServletWebRequest;
-import vinix.catalogo.dtos.request.CategoriaRequestDTO;
+import vinix.compartilhado.excecoes.ConflitoException;
+import vinix.compartilhado.excecoes.NaoExistenteException;
+import vinix.compartilhado.excecoes.RegraDeNegocioException;
 
 class GlobalExceptionHandlerTest {
 
   private final GlobalExceptionHandler handler = new GlobalExceptionHandler();
 
+  /** Exceção de um módulo qualquer: estende a base e é tratada sem o handler conhecê-la. */
+  private static class AlimentoIndisponivelException extends RegraDeNegocioException {
+    AlimentoIndisponivelException(String mensagem) {
+      super(mensagem);
+    }
+  }
+
+  private record DtoDeTeste(String nome) {}
+
   @SuppressWarnings("unused")
-  private void metodoAlvo(CategoriaRequestDTO dto) {  }
+  private void metodoAlvo(DtoDeTeste dto) {
+    // só serve de alvo para montar o MethodParameter do teste de validação
+  }
 
   @Test
   void naoExistente_deveRetornar404() {
@@ -36,8 +51,8 @@ class GlobalExceptionHandlerTest {
   }
 
   @Test
-  void jaExistente_deveRetornar409() {
-    ProblemDetail problema = handler.conflito(new JaExistenteException("Carnes -> categoria já existe"));
+  void conflito_deveRetornar409() {
+    ProblemDetail problema = handler.conflito(new ConflitoException("Carnes -> categoria já existe"));
 
     assertThat(problema.getStatus()).isEqualTo(409);
     assertThat(problema.getTitle()).isEqualTo("Conflito de dados");
@@ -45,11 +60,20 @@ class GlobalExceptionHandlerTest {
   }
 
   @Test
-  void duplicado_deveRetornar409() {
-    ProblemDetail problema = handler.conflito(new DuplicadoException("registro duplicado"));
+  void regraDeNegocio_deveRetornar422() {
+    ProblemDetail problema = handler.regraDeNegocio(new RegraDeNegocioException("retirada em menos de 20 min"));
 
-    assertThat(problema.getStatus()).isEqualTo(409);
-    assertThat(problema.getDetail()).isEqualTo("registro duplicado");
+    assertThat(problema.getStatus()).isEqualTo(422);
+    assertThat(problema.getTitle()).isEqualTo("Regra de negócio violada");
+    assertThat(problema.getDetail()).isEqualTo("retirada em menos de 20 min");
+  }
+
+  @Test
+  void subclasseDeRegraDeNegocioDeOutroModulo_ehTratadaPelaBase() {
+    ProblemDetail problema = handler.regraDeNegocio(new AlimentoIndisponivelException("Alimento 3 indisponível"));
+
+    assertThat(problema.getStatus()).isEqualTo(422);
+    assertThat(problema.getDetail()).isEqualTo("Alimento 3 indisponível");
   }
 
   @Test
@@ -65,6 +89,24 @@ class GlobalExceptionHandlerTest {
   }
 
   @Test
+  void naoAutenticado_deveRetornar401ComMensagemGenerica() {
+    ProblemDetail problema = handler.naoAutenticado(new BadCredentialsException("usuário joao não existe"));
+
+    assertThat(problema.getStatus()).isEqualTo(401);
+    assertThat(problema.getTitle()).isEqualTo("Não autenticado");
+    assertThat(problema.getDetail()).doesNotContain("joao");
+  }
+
+  @Test
+  void acessoNegado_deveRetornar403() {
+    ProblemDetail problema = handler.acessoNegado(new AccessDeniedException("pedido de outro cliente"));
+
+    assertThat(problema.getStatus()).isEqualTo(403);
+    assertThat(problema.getTitle()).isEqualTo("Acesso negado");
+    assertThat(problema.getDetail()).doesNotContain("outro cliente");
+  }
+
+  @Test
   void erroInesperado_deveRetornar500SemVazarAMensagemOriginal() {
     ProblemDetail problema = handler.inesperado(new IllegalStateException("senha do banco: 123"));
 
@@ -75,9 +117,9 @@ class GlobalExceptionHandlerTest {
 
   @Test
   void validacao_deveRetornar400ComListaDeCamposInvalidos() throws Exception {
-    Method alvo = getClass().getDeclaredMethod("metodoAlvo", CategoriaRequestDTO.class);
-    var resultado = new BeanPropertyBindingResult(new CategoriaRequestDTO(""), "categoriaRequestDTO");
-    resultado.addError(new FieldError("categoriaRequestDTO", "nome", "O nome é obrigatório"));
+    Method alvo = getClass().getDeclaredMethod("metodoAlvo", DtoDeTeste.class);
+    var resultado = new BeanPropertyBindingResult(new DtoDeTeste(""), "dtoDeTeste");
+    resultado.addError(new FieldError("dtoDeTeste", "nome", "O nome é obrigatório"));
     var excecao = new MethodArgumentNotValidException(new MethodParameter(alvo, 0), resultado);
 
     ResponseEntity<Object> resposta = handler.handleMethodArgumentNotValid(

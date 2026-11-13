@@ -22,12 +22,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import vinix.catalogo.dtos.request.CategoriaRequestDTO;
 import vinix.catalogo.dtos.response.CategoriaResponseDTO;
 import vinix.catalogo.entities.Categoria;
-import vinix.catalogo.exceptions.JaExistenteException;
-import vinix.catalogo.exceptions.NaoExistenteException;
 import vinix.catalogo.mappers.CategoriaMapper;
 import vinix.catalogo.mappers.CategoriaMapperImpl;
 import vinix.catalogo.repositories.CategoriaRepository;
 import vinix.catalogo.repositories.ProdutoRepository;
+import vinix.compartilhado.excecoes.ConflitoException;
+import vinix.compartilhado.excecoes.NaoExistenteException;
 
 @ExtendWith(MockitoExtension.class)
 class CategoriaServiceImplTest {
@@ -116,11 +116,11 @@ class CategoriaServiceImplTest {
   }
 
   @Test
-  void criar_nomeDuplicado_deveLancarJaExistenteESemSalvar() {
+  void criar_nomeDuplicado_deveLancarConflitoESemSalvar() {
     when(repository.existsByNomeIgnoreCase("carnes")).thenReturn(true);
 
     assertThatThrownBy(() -> service.criar(new CategoriaRequestDTO("carnes")))
-        .isInstanceOf(JaExistenteException.class)
+        .isInstanceOf(ConflitoException.class)
         .hasMessageContaining("carnes");
 
     verify(repository, never()).save(any());
@@ -152,13 +152,13 @@ class CategoriaServiceImplTest {
   }
 
   @Test
-  void atualizar_nomeDeOutraCategoria_deveLancarJaExistenteSemAlterar() {
+  void atualizar_nomeDeOutraCategoria_deveLancarConflitoSemAlterar() {
     Categoria existente = categoria(1L, "Carnes");
     when(repository.findById(1L)).thenReturn(Optional.of(existente));
     when(repository.existsByNomeIgnoreCaseAndIdNot("Massas", 1L)).thenReturn(true);
 
     assertThatThrownBy(() -> service.atualizar(1L, new CategoriaRequestDTO("Massas")))
-        .isInstanceOf(JaExistenteException.class);
+        .isInstanceOf(ConflitoException.class);
 
     assertThat(existente.getNome()).isEqualTo("Carnes");
   }
@@ -186,12 +186,12 @@ class CategoriaServiceImplTest {
   }
 
   @Test
-  void excluir_comProdutosAssociados_deveLancarJaExistenteSemExcluir() {
+  void excluir_comProdutosAssociados_deveLancarConflitoSemExcluir() {
     when(repository.findById(1L)).thenReturn(Optional.of(categoria(1L, "Carnes")));
     when(produtoRepository.existsByCategoriaId(1L)).thenReturn(true);
 
     assertThatThrownBy(() -> service.excluir(1L))
-        .isInstanceOf(JaExistenteException.class)
+        .isInstanceOf(ConflitoException.class)
         .hasMessageContaining("produtos associados");
 
     verify(repository, never()).deleteById(anyLong());

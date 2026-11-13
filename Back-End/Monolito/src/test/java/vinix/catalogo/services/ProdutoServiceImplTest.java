@@ -24,11 +24,11 @@ import vinix.catalogo.dtos.request.ProdutoRequestDTO;
 import vinix.catalogo.dtos.response.ProdutoResponseDTO;
 import vinix.catalogo.entities.Categoria;
 import vinix.catalogo.entities.Produto;
-import vinix.catalogo.exceptions.NaoExistenteException;
 import vinix.catalogo.mappers.ProdutoMapper;
 import vinix.catalogo.mappers.ProdutoMapperImpl;
 import vinix.catalogo.repositories.CategoriaRepository;
 import vinix.catalogo.repositories.ProdutoRepository;
+import vinix.compartilhado.excecoes.NaoExistenteException;
 
 @ExtendWith(MockitoExtension.class)
 class ProdutoServiceImplTest {
