@@ -29,18 +29,11 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_CONTENT;
 
-/**
- * Tratamento global de erros. Só conhece as exceções base do módulo compartilhado:
- * exceções criadas pelos módulos (que estendem essas bases) são tratadas sem alterar este arquivo.
- *
- * Herda de ResponseEntityExceptionHandler: JSON malformado, tipo inválido na URL,
- * parâmetro ausente, método HTTP errado etc. já viram ProblemDetail com o status certo.
- */
+
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-  // Sobrescreve só a validação, para incluir a lista de campos com erro.
   @Override
   protected ResponseEntity<Object> handleMethodArgumentNotValid(
       MethodArgumentNotValidException ex, HttpHeaders headers,
@@ -55,7 +48,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             "mensagem", Objects.requireNonNullElse(e.getDefaultMessage(), "valor inválido")))
         .toList());
 
-    // handleExceptionInternal preenche o "instance" com o caminho da requisição
     return handleExceptionInternal(ex, problema, headers, BAD_REQUEST, request);
   }
 
@@ -77,7 +69,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     return problema(UNPROCESSABLE_CONTENT, "Regra de negócio violada", ex.getMessage());
   }
 
-  // Rede de segurança: duas requisições simultâneas passando pela checagem e batendo no índice único.
   @ExceptionHandler(DataIntegrityViolationException.class)
   public ProblemDetail integridade(DataIntegrityViolationException ex) {
     log.warn("Violação de integridade: {}", ex.getMostSpecificCause().getMessage());
@@ -85,22 +76,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         "Não foi possível realizar a operação devido a uma restrição de integridade dos dados");
   }
 
-  // Falha de autenticação lançada dentro da aplicação (ex.: login com credenciais erradas).
-  // Mensagem genérica de propósito: não revela se o usuário existe.
   @ExceptionHandler(AuthenticationException.class)
   public ProblemDetail naoAutenticado(AuthenticationException ex) {
     log.warn("Falha de autenticação: {}", ex.getMessage());
     return problema(UNAUTHORIZED, "Não autenticado", "Credenciais ausentes ou inválidas");
   }
 
-  // Sem este handler, o Exception.class abaixo transformaria o 403 em 500.
   @ExceptionHandler(AccessDeniedException.class)
   public ProblemDetail acessoNegado(AccessDeniedException ex) {
     log.warn("Acesso negado: {}", ex.getMessage());
     return problema(FORBIDDEN, "Acesso negado", "Você não tem permissão para realizar esta operação");
   }
 
-  // Último recurso: só o que ninguém tratou vira 500 (e é o único caso logado como error).
   @ExceptionHandler(Exception.class)
   public ProblemDetail inesperado(Exception ex) {
     log.error("Erro interno não tratado", ex);

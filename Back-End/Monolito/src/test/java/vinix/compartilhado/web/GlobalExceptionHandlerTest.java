@@ -27,7 +27,6 @@ class GlobalExceptionHandlerTest {
 
   private final GlobalExceptionHandler handler = new GlobalExceptionHandler();
 
-  /** Exceção de um módulo qualquer: estende a base e é tratada sem o handler conhecê-la. */
   private static class AlimentoIndisponivelException extends RegraDeNegocioException {
     AlimentoIndisponivelException(String mensagem) {
       super(mensagem);
@@ -37,9 +36,7 @@ class GlobalExceptionHandlerTest {
   private record DtoDeTeste(String nome) {}
 
   @SuppressWarnings("unused")
-  private void metodoAlvo(DtoDeTeste dto) {
-    // só serve de alvo para montar o MethodParameter do teste de validação
-  }
+  private void metodoAlvo(DtoDeTeste dto) {}
 
   @Test
   void naoExistente_deveRetornar404() {
