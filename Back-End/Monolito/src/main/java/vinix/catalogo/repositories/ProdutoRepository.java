@@ -1,19 +1,19 @@
 package vinix.catalogo.repositories;
 
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import vinix.catalogo.entities.Produto;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
-public interface ProdutoRepository
-    extends JpaRepository<Produto, Long>, JpaSpecificationExecutor<Produto> {
+public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 
-  @EntityGraph(attributePaths = "categoria")
-  List<Produto> findAll(Specification<Produto> spec);
+  @Override
+  @EntityGraph(attributePaths = {"alimento", "precos"})
+  Optional<Produto> findById(Long id);
 
-  boolean existsByCategoriaId(Long categoriaId);
-
+  @EntityGraph(attributePaths = {"alimento", "precos"})
+  List<Produto> findAllByIdIn(Collection<Long> ids);
 }

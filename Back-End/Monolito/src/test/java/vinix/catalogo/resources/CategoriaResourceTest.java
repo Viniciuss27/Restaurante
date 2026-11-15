@@ -23,7 +23,7 @@ class CategoriaResourceTest {
   @Mock private CategoriaService service;
   @InjectMocks private CategoriaResource resource;
 
-  private final CategoriaResponseDTO carnes = new CategoriaResponseDTO(1L, "Carnes");
+  private final CategoriaResponseDTO carnes = new CategoriaResponseDTO(1L, "Carnes", true);
 
   @Test
   void listar_deveRetornar200ComAsCategorias() {
@@ -57,7 +57,7 @@ class CategoriaResourceTest {
 
   @Test
   void criar_deveRetornar201ComLocationDaNovaCategoria() {
-    var request = new CategoriaRequestDTO("Carnes");
+    var request = new CategoriaRequestDTO("Carnes", true);
     when(service.criar(request)).thenReturn(carnes);
 
     ResponseEntity<CategoriaResponseDTO> resposta =
@@ -70,7 +70,7 @@ class CategoriaResourceTest {
 
   @Test
   void atualizar_deveRetornar200() {
-    var request = new CategoriaRequestDTO("Carnes");
+    var request = new CategoriaRequestDTO("Carnes", true);
     when(service.atualizar(1L, request)).thenReturn(carnes);
 
     ResponseEntity<CategoriaResponseDTO> resposta = resource.atualizar(1L, request);

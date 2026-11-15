@@ -1,6 +1,6 @@
 package vinix.catalogo.dtos.response;
 
-public record ProdutoResponseDTO(
+public record AlimentoResponseDTO(
     Long id,
     String nome,
     String descricao,

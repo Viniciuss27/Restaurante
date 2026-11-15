@@ -13,7 +13,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-class ProdutoRequestDTOTest {
+class AlimentoRequestDTOTest {
 
   private static Validator validator;
 
@@ -22,11 +22,11 @@ class ProdutoRequestDTOTest {
     validator = Validation.buildDefaultValidatorFactory().getValidator();
   }
 
-  private ProdutoRequestDTO dto(String nome, String descricao, Long categoriaId, String imagemUrl) {
-    return new ProdutoRequestDTO(nome, descricao, categoriaId, imagemUrl);
+  private AlimentoRequestDTO dto(String nome, String descricao, Long categoriaId, String imagemUrl) {
+    return new AlimentoRequestDTO(nome, descricao, categoriaId, imagemUrl);
   }
 
-  private Set<String> camposInvalidos(ProdutoRequestDTO dto) {
+  private Set<String> camposInvalidos(AlimentoRequestDTO dto) {
     return validator.validate(dto).stream()
         .map(v -> v.getPropertyPath().toString()).collect(Collectors.toSet());
   }

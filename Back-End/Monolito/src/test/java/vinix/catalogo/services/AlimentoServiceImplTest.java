@@ -20,44 +20,44 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.jpa.domain.Specification;
-import vinix.catalogo.dtos.request.ProdutoRequestDTO;
-import vinix.catalogo.dtos.response.ProdutoResponseDTO;
+import vinix.catalogo.dtos.request.AlimentoRequestDTO;
+import vinix.catalogo.dtos.response.AlimentoResponseDTO;
 import vinix.catalogo.entities.Categoria;
-import vinix.catalogo.entities.Produto;
-import vinix.catalogo.exceptions.NaoExistenteException;
-import vinix.catalogo.mappers.ProdutoMapper;
-import vinix.catalogo.mappers.ProdutoMapperImpl;
+import vinix.catalogo.entities.Alimento;
+import vinix.catalogo.mappers.AlimentoMapper;
+import vinix.catalogo.mappers.AlimentoMapperImpl;
 import vinix.catalogo.repositories.CategoriaRepository;
-import vinix.catalogo.repositories.ProdutoRepository;
+import vinix.catalogo.repositories.AlimentoRepository;
+import vinix.compartilhado.excecoes.NaoExistenteException;
 
 @ExtendWith(MockitoExtension.class)
-class ProdutoServiceImplTest {
+class AlimentoServiceImplTest {
 
   @Mock private CategoriaRepository categoriaRepository;
-  @Mock private ProdutoRepository repository;
-  @Spy private ProdutoMapper mapper = new ProdutoMapperImpl();
-  @InjectMocks private ProdutoServiceImpl service;
-  @Captor private ArgumentCaptor<Specification<Produto>> specCaptor;
+  @Mock private AlimentoRepository repository;
+  @Spy private AlimentoMapper mapper = new AlimentoMapperImpl();
+  @InjectMocks private AlimentoServiceImpl service;
+  @Captor private ArgumentCaptor<Specification<Alimento>> specCaptor;
 
   private Categoria categoria(Long id, String nome) {
     return Categoria.builder().id(id).nome(nome).build();
   }
 
-  private Produto produto(Long id, String nome, Categoria categoria) {
-    return Produto.builder().id(id).nome(nome).descricao("Descrição " + nome)
+  private Alimento alimento(Long id, String nome, Categoria categoria) {
+    return Alimento.builder().id(id).nome(nome).descricao("Descrição " + nome)
         .categoria(categoria).imagemUrl("http://img/" + id + ".png").build();
   }
 
   // ---------- buscarId ----------
 
   @Test
-  void buscarId_existente_deveRetornarProdutoComDadosDaCategoria() {
-    Produto costela = produto(10L, "Costela", categoria(1L, "Carnes"));
+  void buscarId_existente_deveRetornarAlimentoComDadosDaCategoria() {
+    Alimento costela = alimento(10L, "Costela", categoria(1L, "Carnes"));
     when(repository.findById(10L)).thenReturn(Optional.of(costela));
 
-    ProdutoResponseDTO resultado = service.buscarId(10L);
+    AlimentoResponseDTO resultado = service.buscarId(10L);
 
-    assertThat(resultado).isEqualTo(new ProdutoResponseDTO(
+    assertThat(resultado).isEqualTo(new AlimentoResponseDTO(
         10L, "Costela", "Descrição Costela", 1L, "Carnes", "http://img/10.png", true));
   }
 
@@ -75,19 +75,19 @@ class ProdutoServiceImplTest {
   @Test
   void buscar_comFiltros_deveDelegarAoRepositorioEMapearResultado() {
     Categoria carnes = categoria(1L, "Carnes");
-    when(repository.findAll(ArgumentMatchers.<Specification<Produto>>any()))
-        .thenReturn(List.of(produto(10L, "Costela", carnes), produto(11L, "Churrasco", carnes)));
+    when(repository.findAll(ArgumentMatchers.<Specification<Alimento>>any()))
+        .thenReturn(List.of(alimento(10L, "Costela", carnes), alimento(11L, "Churrasco", carnes)));
 
-    List<ProdutoResponseDTO> resultado = service.buscar("c", "desc", "carnes", true);
+    List<AlimentoResponseDTO> resultado = service.buscar("c", "desc", "carnes", true);
 
-    assertThat(resultado).extracting(ProdutoResponseDTO::nome).containsExactly("Costela", "Churrasco");
+    assertThat(resultado).extracting(AlimentoResponseDTO::nome).containsExactly("Costela", "Churrasco");
     verify(repository).findAll(specCaptor.capture());
     assertThat(specCaptor.getValue()).isNotNull();
   }
 
   @Test
   void buscar_semFiltrosESemResultados_deveRetornarListaVazia() {
-    when(repository.findAll(ArgumentMatchers.<Specification<Produto>>any())).thenReturn(List.of());
+    when(repository.findAll(ArgumentMatchers.<Specification<Alimento>>any())).thenReturn(List.of());
 
     assertThat(service.buscar(null, null, null, null)).isEmpty();
   }
@@ -95,24 +95,24 @@ class ProdutoServiceImplTest {
   // ---------- criar ----------
 
   @Test
-  void criar_categoriaExistente_deveSalvarProdutoDisponivelComACategoria() {
+  void criar_categoriaExistente_deveSalvarAlimentoDisponivelComACategoria() {
     Categoria carnes = categoria(1L, "Carnes");
     when(categoriaRepository.findById(1L)).thenReturn(Optional.of(carnes));
-    when(repository.save(any(Produto.class))).thenAnswer(invocacao -> {
-      Produto salvo = invocacao.getArgument(0);
+    when(repository.save(any(Alimento.class))).thenAnswer(invocacao -> {
+      Alimento salvo = invocacao.getArgument(0);
       salvo.setId(10L);
       return salvo;
     });
 
-    ProdutoResponseDTO resultado = service.criar(
-        new ProdutoRequestDTO("Costela", "Assada", 1L, "http://img/costela.png"));
+    AlimentoResponseDTO resultado = service.criar(
+        new AlimentoRequestDTO("Costela", "Assada", 1L, "http://img/costela.png"));
 
-    assertThat(resultado).isEqualTo(new ProdutoResponseDTO(
+    assertThat(resultado).isEqualTo(new AlimentoResponseDTO(
         10L, "Costela", "Assada", 1L, "Carnes", "http://img/costela.png", true));
 
-    ArgumentCaptor<Produto> captor = ArgumentCaptor.forClass(Produto.class);
+    ArgumentCaptor<Alimento> captor = ArgumentCaptor.forClass(Alimento.class);
     verify(repository).save(captor.capture());
-    Produto salvo = captor.getValue();
+    Alimento salvo = captor.getValue();
     assertThat(salvo.getCategoria()).isSameAs(carnes);
     assertThat(salvo.isDisponivel()).isTrue();
   }
@@ -121,7 +121,7 @@ class ProdutoServiceImplTest {
   void criar_categoriaInexistente_deveLancarNaoExistenteSemSalvar() {
     when(categoriaRepository.findById(5L)).thenReturn(Optional.empty());
 
-    assertThatThrownBy(() -> service.criar(new ProdutoRequestDTO("Costela", "Assada", 5L, null)))
+    assertThatThrownBy(() -> service.criar(new AlimentoRequestDTO("Costela", "Assada", 5L, null)))
         .isInstanceOf(NaoExistenteException.class)
         .hasMessageContaining("categoria");
 
@@ -134,12 +134,12 @@ class ProdutoServiceImplTest {
   void atualizar_valido_deveAlterarCamposETrocarCategoria() {
     Categoria carnes = categoria(1L, "Carnes");
     Categoria massas = categoria(2L, "Massas");
-    Produto existente = produto(10L, "Costela", carnes);
+    Alimento existente = alimento(10L, "Costela", carnes);
     when(repository.findById(10L)).thenReturn(Optional.of(existente));
     when(categoriaRepository.findById(2L)).thenReturn(Optional.of(massas));
 
-    ProdutoResponseDTO resultado = service.atualizar(
-        10L, new ProdutoRequestDTO("Macarrão", "Alho e óleo", 2L, "http://img/novo.png"));
+    AlimentoResponseDTO resultado = service.atualizar(
+        10L, new AlimentoRequestDTO("Macarrão", "Alho e óleo", 2L, "http://img/novo.png"));
 
     assertThat(existente.getNome()).isEqualTo("Macarrão");
     assertThat(existente.getDescricao()).isEqualTo("Alho e óleo");
@@ -150,22 +150,22 @@ class ProdutoServiceImplTest {
   }
 
   @Test
-  void atualizar_produtoInexistente_deveLancarNaoExistenteSemBuscarCategoria() {
+  void atualizar_alimentoInexistente_deveLancarNaoExistenteSemBuscarCategoria() {
     when(repository.findById(99L)).thenReturn(Optional.empty());
 
-    assertThatThrownBy(() -> service.atualizar(99L, new ProdutoRequestDTO("X", null, 1L, null)))
+    assertThatThrownBy(() -> service.atualizar(99L, new AlimentoRequestDTO("X", null, 1L, null)))
         .isInstanceOf(NaoExistenteException.class);
 
     verifyNoInteractions(categoriaRepository);
   }
 
   @Test
-  void atualizar_categoriaInexistente_deveLancarNaoExistenteSemAlterarProduto() {
-    Produto existente = produto(10L, "Costela", categoria(1L, "Carnes"));
+  void atualizar_categoriaInexistente_deveLancarNaoExistenteSemAlterarAlimento() {
+    Alimento existente = alimento(10L, "Costela", categoria(1L, "Carnes"));
     when(repository.findById(10L)).thenReturn(Optional.of(existente));
     when(categoriaRepository.findById(7L)).thenReturn(Optional.empty());
 
-    assertThatThrownBy(() -> service.atualizar(10L, new ProdutoRequestDTO("Novo nome", null, 7L, null)))
+    assertThatThrownBy(() -> service.atualizar(10L, new AlimentoRequestDTO("Novo nome", null, 7L, null)))
         .isInstanceOf(NaoExistenteException.class)
         .hasMessageContaining("categoria");
 
@@ -176,7 +176,7 @@ class ProdutoServiceImplTest {
 
   @Test
   void alterarDisponibilidade_desativar_deveMarcarIndisponivel() {
-    Produto existente = produto(10L, "Costela", categoria(1L, "Carnes"));
+    Alimento existente = alimento(10L, "Costela", categoria(1L, "Carnes"));
     when(repository.findById(10L)).thenReturn(Optional.of(existente));
 
     service.alterarDisponibilidade(10L, false);
@@ -186,7 +186,7 @@ class ProdutoServiceImplTest {
 
   @Test
   void alterarDisponibilidade_reativar_deveMarcarDisponivel() {
-    Produto existente = produto(10L, "Costela", categoria(1L, "Carnes"));
+    Alimento existente = alimento(10L, "Costela", categoria(1L, "Carnes"));
     existente.setDisponivel(false);
     when(repository.findById(10L)).thenReturn(Optional.of(existente));
 
@@ -197,7 +197,7 @@ class ProdutoServiceImplTest {
 
   @Test
   void alterarDisponibilidade_estadoJaAplicado_deveSerIdempotente() {
-    Produto existente = produto(10L, "Costela", categoria(1L, "Carnes"));
+    Alimento existente = alimento(10L, "Costela", categoria(1L, "Carnes"));
     existente.setDisponivel(false);
     when(repository.findById(10L)).thenReturn(Optional.of(existente));
 
@@ -207,7 +207,7 @@ class ProdutoServiceImplTest {
   }
 
   @Test
-  void alterarDisponibilidade_produtoInexistente_deveLancarNaoExistente() {
+  void alterarDisponibilidade_alimentoInexistente_deveLancarNaoExistente() {
     when(repository.findById(99L)).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> service.alterarDisponibilidade(99L, true))

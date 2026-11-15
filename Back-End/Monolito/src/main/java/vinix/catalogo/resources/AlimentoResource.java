@@ -13,22 +13,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
-import vinix.catalogo.dtos.request.ProdutoRequestDTO;
-import vinix.catalogo.dtos.response.ProdutoResponseDTO;
-import vinix.catalogo.services.ProdutoService;
+import vinix.catalogo.dtos.request.AlimentoRequestDTO;
+import vinix.catalogo.dtos.response.AlimentoResponseDTO;
+import vinix.catalogo.services.AlimentoService;
 
 import java.net.URI;
 import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/produtos")
-public class ProdutoResource {
+@RequestMapping("/alimentos")
+public class AlimentoResource {
 
-  private final ProdutoService service;
+  private final AlimentoService service;
 
   @GetMapping
-  public ResponseEntity<List<ProdutoResponseDTO>> buscar(
+  public ResponseEntity<List<AlimentoResponseDTO>> buscar(
       @RequestParam(required = false) String nome,
       @RequestParam(required = false) String descricao,
       @RequestParam(required = false) String categoria,
@@ -37,23 +37,23 @@ public class ProdutoResource {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<ProdutoResponseDTO> buscarId(@PathVariable Long id) {
+  public ResponseEntity<AlimentoResponseDTO> buscarId(@PathVariable Long id) {
     return ResponseEntity.ok(service.buscarId(id));
   }
 
   @PostMapping
-  public ResponseEntity<ProdutoResponseDTO> criar(
-      @RequestBody @Valid ProdutoRequestDTO produto, UriComponentsBuilder builder) {
+  public ResponseEntity<AlimentoResponseDTO> criar(
+      @RequestBody @Valid AlimentoRequestDTO alimento, UriComponentsBuilder builder) {
 
-    ProdutoResponseDTO response =  service.criar(produto);
-    URI uri = builder.path("/produtos/{id}").buildAndExpand(response.id()).toUri();
+    AlimentoResponseDTO response =  service.criar(alimento);
+    URI uri = builder.path("/alimentos/{id}").buildAndExpand(response.id()).toUri();
     return ResponseEntity.created(uri).body(response);
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<ProdutoResponseDTO> atualizar(
-      @PathVariable Long id, @RequestBody @Valid ProdutoRequestDTO produto) {
-    return ResponseEntity.ok(service.atualizar(id, produto));
+  public ResponseEntity<AlimentoResponseDTO> atualizar(
+      @PathVariable Long id, @RequestBody @Valid AlimentoRequestDTO alimento) {
+    return ResponseEntity.ok(service.atualizar(id, alimento));
   }
 
   @PatchMapping("/{id}/disponibilidade")

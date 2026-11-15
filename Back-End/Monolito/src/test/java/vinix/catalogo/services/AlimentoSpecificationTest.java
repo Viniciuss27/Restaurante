@@ -3,10 +3,10 @@ package vinix.catalogo.services;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
-import static vinix.catalogo.services.ProdutoSpecification.categoriaContem;
-import static vinix.catalogo.services.ProdutoSpecification.descricaoContem;
-import static vinix.catalogo.services.ProdutoSpecification.disponivelIgual;
-import static vinix.catalogo.services.ProdutoSpecification.nomeContem;
+import static vinix.catalogo.services.AlimentoSpecification.categoriaContem;
+import static vinix.catalogo.services.AlimentoSpecification.descricaoContem;
+import static vinix.catalogo.services.AlimentoSpecification.disponivelIgual;
+import static vinix.catalogo.services.AlimentoSpecification.nomeContem;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -22,12 +22,12 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import vinix.catalogo.entities.Produto;
+import vinix.catalogo.entities.Alimento;
 
 @ExtendWith(MockitoExtension.class)
-class ProdutoSpecificationTest {
+class AlimentoSpecificationTest {
 
-  @Mock private Root<Produto> root;
+  @Mock private Root<Alimento> root;
   @Mock private CriteriaQuery<?> query;
   @Mock private CriteriaBuilder cb;
   @Mock private Path<String> caminhoTexto;

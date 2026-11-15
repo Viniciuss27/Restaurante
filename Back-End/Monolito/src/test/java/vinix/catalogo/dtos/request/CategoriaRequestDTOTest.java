@@ -29,19 +29,19 @@ class CategoriaRequestDTOTest {
 
   @Test
   void nomeValido_naoDeveGerarViolacoes() {
-    assertThat(validator.validate(new CategoriaRequestDTO("Carnes"))).isEmpty();
+    assertThat(validator.validate(new CategoriaRequestDTO("Carnes", true))).isEmpty();
   }
 
   @ParameterizedTest
   @NullAndEmptySource
   @ValueSource(strings = {"   "})
   void nomeNuloOuEmBranco_deveSerInvalido(String nome) {
-    assertThat(camposInvalidos(new CategoriaRequestDTO(nome))).containsExactly("nome");
+    assertThat(camposInvalidos(new CategoriaRequestDTO(nome, true))).containsExactly("nome");
   }
 
   @Test
   void nomeObrigatorio_deveUsarMensagemEsperada() {
-    Set<String> mensagens = validator.validate(new CategoriaRequestDTO(null)).stream()
+    Set<String> mensagens = validator.validate(new CategoriaRequestDTO(null, true)).stream()
         .map(ConstraintViolation::getMessage).collect(Collectors.toSet());
 
     assertThat(mensagens).containsExactly("O nome é obrigatório");
@@ -49,21 +49,26 @@ class CategoriaRequestDTOTest {
 
   @Test
   void nomeComMenosDeTresCaracteres_deveSerInvalido() {
-    assertThat(camposInvalidos(new CategoriaRequestDTO("ab"))).containsExactly("nome");
+    assertThat(camposInvalidos(new CategoriaRequestDTO("ab", true))).containsExactly("nome");
   }
 
   @Test
   void nomeComTresCaracteres_deveSerValido() {
-    assertThat(validator.validate(new CategoriaRequestDTO("abc"))).isEmpty();
+    assertThat(validator.validate(new CategoriaRequestDTO("abc", true))).isEmpty();
   }
 
   @Test
   void nomeComMaisDeCemCaracteres_deveSerInvalido() {
-    assertThat(camposInvalidos(new CategoriaRequestDTO("a".repeat(101)))).containsExactly("nome");
+    assertThat(camposInvalidos(new CategoriaRequestDTO("a".repeat(101), true))).containsExactly("nome");
   }
 
   @Test
   void nomeComCemCaracteres_deveSerValido() {
-    assertThat(validator.validate(new CategoriaRequestDTO("a".repeat(100)))).isEmpty();
+    assertThat(validator.validate(new CategoriaRequestDTO("a".repeat(100), true))).isEmpty();
+  }
+
+  @Test
+  void compoeMarmitaNulo_deveSerInvalido() {
+    assertThat(camposInvalidos(new CategoriaRequestDTO("Bebidas", null))).containsExactly("compoeMarmita");
   }
 }

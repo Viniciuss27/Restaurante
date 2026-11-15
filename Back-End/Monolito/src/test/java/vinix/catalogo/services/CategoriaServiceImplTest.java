@@ -22,17 +22,17 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import vinix.catalogo.dtos.request.CategoriaRequestDTO;
 import vinix.catalogo.dtos.response.CategoriaResponseDTO;
 import vinix.catalogo.entities.Categoria;
-import vinix.catalogo.exceptions.JaExistenteException;
-import vinix.catalogo.exceptions.NaoExistenteException;
 import vinix.catalogo.mappers.CategoriaMapper;
 import vinix.catalogo.mappers.CategoriaMapperImpl;
 import vinix.catalogo.repositories.CategoriaRepository;
-import vinix.catalogo.repositories.ProdutoRepository;
+import vinix.catalogo.repositories.AlimentoRepository;
+import vinix.compartilhado.excecoes.ConflitoException;
+import vinix.compartilhado.excecoes.NaoExistenteException;
 
 @ExtendWith(MockitoExtension.class)
 class CategoriaServiceImplTest {
 
-  @Mock private ProdutoRepository produtoRepository;
+  @Mock private AlimentoRepository alimentoRepository;
   @Mock private CategoriaRepository repository;
   @Spy private CategoriaMapper mapper = new CategoriaMapperImpl();
   @InjectMocks private CategoriaServiceImpl service;
@@ -50,7 +50,7 @@ class CategoriaServiceImplTest {
     List<CategoriaResponseDTO> resultado = service.listar();
 
     assertThat(resultado).containsExactly(
-        new CategoriaResponseDTO(1L, "Carnes"), new CategoriaResponseDTO(2L, "Massas"));
+        new CategoriaResponseDTO(1L, "Carnes", true), new CategoriaResponseDTO(2L, "Massas", true));
   }
 
   @Test
@@ -66,7 +66,7 @@ class CategoriaServiceImplTest {
   void buscarId_existente_deveRetornarCategoria() {
     when(repository.findById(1L)).thenReturn(Optional.of(categoria(1L, "Carnes")));
 
-    assertThat(service.buscarId(1L)).isEqualTo(new CategoriaResponseDTO(1L, "Carnes"));
+    assertThat(service.buscarId(1L)).isEqualTo(new CategoriaResponseDTO(1L, "Carnes", true));
   }
 
   @Test
@@ -84,7 +84,7 @@ class CategoriaServiceImplTest {
   void buscarCategoria_existente_deveRetornarCategoria() {
     when(repository.findByNomeIgnoreCase("carnes")).thenReturn(Optional.of(categoria(1L, "Carnes")));
 
-    assertThat(service.buscarCategoria("carnes")).isEqualTo(new CategoriaResponseDTO(1L, "Carnes"));
+    assertThat(service.buscarCategoria("carnes")).isEqualTo(new CategoriaResponseDTO(1L, "Carnes", true));
   }
 
   @Test
@@ -107,20 +107,20 @@ class CategoriaServiceImplTest {
       return salva;
     });
 
-    CategoriaResponseDTO resultado = service.criar(new CategoriaRequestDTO("Carnes"));
+    CategoriaResponseDTO resultado = service.criar(new CategoriaRequestDTO("Carnes", true));
 
-    assertThat(resultado).isEqualTo(new CategoriaResponseDTO(1L, "Carnes"));
+    assertThat(resultado).isEqualTo(new CategoriaResponseDTO(1L, "Carnes", true));
     ArgumentCaptor<Categoria> captor = ArgumentCaptor.forClass(Categoria.class);
     verify(repository).save(captor.capture());
     assertThat(captor.getValue().getNome()).isEqualTo("Carnes");
   }
 
   @Test
-  void criar_nomeDuplicado_deveLancarJaExistenteESemSalvar() {
+  void criar_nomeDuplicado_deveLancarConflitoESemSalvar() {
     when(repository.existsByNomeIgnoreCase("carnes")).thenReturn(true);
 
-    assertThatThrownBy(() -> service.criar(new CategoriaRequestDTO("carnes")))
-        .isInstanceOf(JaExistenteException.class)
+    assertThatThrownBy(() -> service.criar(new CategoriaRequestDTO("carnes", true)))
+        .isInstanceOf(ConflitoException.class)
         .hasMessageContaining("carnes");
 
     verify(repository, never()).save(any());
@@ -134,10 +134,10 @@ class CategoriaServiceImplTest {
     when(repository.findById(1L)).thenReturn(Optional.of(existente));
     when(repository.existsByNomeIgnoreCaseAndIdNot("Massas", 1L)).thenReturn(false);
 
-    CategoriaResponseDTO resultado = service.atualizar(1L, new CategoriaRequestDTO("Massas"));
+    CategoriaResponseDTO resultado = service.atualizar(1L, new CategoriaRequestDTO("Massas", true));
 
     assertThat(existente.getNome()).isEqualTo("Massas");
-    assertThat(resultado).isEqualTo(new CategoriaResponseDTO(1L, "Massas"));
+    assertThat(resultado).isEqualTo(new CategoriaResponseDTO(1L, "Massas", true));
     verify(repository, never()).save(any()); // dirty checking grava no commit
   }
 
@@ -145,20 +145,20 @@ class CategoriaServiceImplTest {
   void atualizar_idInexistente_deveLancarNaoExistenteSemChecarDuplicidade() {
     when(repository.findById(99L)).thenReturn(Optional.empty());
 
-    assertThatThrownBy(() -> service.atualizar(99L, new CategoriaRequestDTO("Massas")))
+    assertThatThrownBy(() -> service.atualizar(99L, new CategoriaRequestDTO("Massas", true)))
         .isInstanceOf(NaoExistenteException.class);
 
     verify(repository, never()).existsByNomeIgnoreCaseAndIdNot(anyString(), anyLong());
   }
 
   @Test
-  void atualizar_nomeDeOutraCategoria_deveLancarJaExistenteSemAlterar() {
+  void atualizar_nomeDeOutraCategoria_deveLancarConflitoSemAlterar() {
     Categoria existente = categoria(1L, "Carnes");
     when(repository.findById(1L)).thenReturn(Optional.of(existente));
     when(repository.existsByNomeIgnoreCaseAndIdNot("Massas", 1L)).thenReturn(true);
 
-    assertThatThrownBy(() -> service.atualizar(1L, new CategoriaRequestDTO("Massas")))
-        .isInstanceOf(JaExistenteException.class);
+    assertThatThrownBy(() -> service.atualizar(1L, new CategoriaRequestDTO("Massas", true)))
+        .isInstanceOf(ConflitoException.class);
 
     assertThat(existente.getNome()).isEqualTo("Carnes");
   }
@@ -166,9 +166,9 @@ class CategoriaServiceImplTest {
   // ---------- excluir ----------
 
   @Test
-  void excluir_semProdutos_deveExcluir() {
+  void excluir_semAlimentos_deveExcluir() {
     when(repository.findById(1L)).thenReturn(Optional.of(categoria(1L, "Carnes")));
-    when(produtoRepository.existsByCategoriaId(1L)).thenReturn(false);
+    when(alimentoRepository.existsByCategoriaId(1L)).thenReturn(false);
 
     service.excluir(1L);
 
@@ -176,23 +176,23 @@ class CategoriaServiceImplTest {
   }
 
   @Test
-  void excluir_idInexistente_deveLancarNaoExistenteSemTocarEmProdutos() {
+  void excluir_idInexistente_deveLancarNaoExistenteSemTocarEmAlimentos() {
     when(repository.findById(99L)).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> service.excluir(99L)).isInstanceOf(NaoExistenteException.class);
 
-    verifyNoInteractions(produtoRepository);
+    verifyNoInteractions(alimentoRepository);
     verify(repository, never()).deleteById(anyLong());
   }
 
   @Test
-  void excluir_comProdutosAssociados_deveLancarJaExistenteSemExcluir() {
+  void excluir_comAlimentosAssociados_deveLancarConflitoSemExcluir() {
     when(repository.findById(1L)).thenReturn(Optional.of(categoria(1L, "Carnes")));
-    when(produtoRepository.existsByCategoriaId(1L)).thenReturn(true);
+    when(alimentoRepository.existsByCategoriaId(1L)).thenReturn(true);
 
     assertThatThrownBy(() -> service.excluir(1L))
-        .isInstanceOf(JaExistenteException.class)
-        .hasMessageContaining("produtos associados");
+        .isInstanceOf(ConflitoException.class)
+        .hasMessageContaining("alimentos associados");
 
     verify(repository, never()).deleteById(anyLong());
   }
