@@ -1,5 +1,6 @@
 package vinix.catalogo.dtos.request;
 
+import vinix.catalogo.GrupoAlimentar;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import jakarta.validation.ConstraintViolation;
@@ -29,19 +30,19 @@ class CategoriaRequestDTOTest {
 
   @Test
   void nomeValido_naoDeveGerarViolacoes() {
-    assertThat(validator.validate(new CategoriaRequestDTO("Carnes", true))).isEmpty();
+    assertThat(validator.validate(new CategoriaRequestDTO("Carnes", GrupoAlimentar.CARNE))).isEmpty();
   }
 
   @ParameterizedTest
   @NullAndEmptySource
   @ValueSource(strings = {"   "})
   void nomeNuloOuEmBranco_deveSerInvalido(String nome) {
-    assertThat(camposInvalidos(new CategoriaRequestDTO(nome, true))).containsExactly("nome");
+    assertThat(camposInvalidos(new CategoriaRequestDTO(nome, GrupoAlimentar.CARNE))).containsExactly("nome");
   }
 
   @Test
   void nomeObrigatorio_deveUsarMensagemEsperada() {
-    Set<String> mensagens = validator.validate(new CategoriaRequestDTO(null, true)).stream()
+    Set<String> mensagens = validator.validate(new CategoriaRequestDTO(null, GrupoAlimentar.CARNE)).stream()
         .map(ConstraintViolation::getMessage).collect(Collectors.toSet());
 
     assertThat(mensagens).containsExactly("O nome é obrigatório");
@@ -49,26 +50,26 @@ class CategoriaRequestDTOTest {
 
   @Test
   void nomeComMenosDeTresCaracteres_deveSerInvalido() {
-    assertThat(camposInvalidos(new CategoriaRequestDTO("ab", true))).containsExactly("nome");
+    assertThat(camposInvalidos(new CategoriaRequestDTO("ab", GrupoAlimentar.CARNE))).containsExactly("nome");
   }
 
   @Test
   void nomeComTresCaracteres_deveSerValido() {
-    assertThat(validator.validate(new CategoriaRequestDTO("abc", true))).isEmpty();
+    assertThat(validator.validate(new CategoriaRequestDTO("abc", GrupoAlimentar.CARNE))).isEmpty();
   }
 
   @Test
   void nomeComMaisDeCemCaracteres_deveSerInvalido() {
-    assertThat(camposInvalidos(new CategoriaRequestDTO("a".repeat(101), true))).containsExactly("nome");
+    assertThat(camposInvalidos(new CategoriaRequestDTO("a".repeat(101), GrupoAlimentar.CARNE))).containsExactly("nome");
   }
 
   @Test
   void nomeComCemCaracteres_deveSerValido() {
-    assertThat(validator.validate(new CategoriaRequestDTO("a".repeat(100), true))).isEmpty();
+    assertThat(validator.validate(new CategoriaRequestDTO("a".repeat(100), GrupoAlimentar.CARNE))).isEmpty();
   }
 
   @Test
-  void compoeMarmitaNulo_deveSerInvalido() {
-    assertThat(camposInvalidos(new CategoriaRequestDTO("Bebidas", null))).containsExactly("compoeMarmita");
+  void grupoNulo_deveSerInvalido() {
+    assertThat(camposInvalidos(new CategoriaRequestDTO("Bebidas", null))).containsExactly("grupo");
   }
 }

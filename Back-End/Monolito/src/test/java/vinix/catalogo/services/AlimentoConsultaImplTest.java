@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import vinix.catalogo.AlimentoResumo;
+import vinix.catalogo.GrupoAlimentar;
 import vinix.catalogo.entities.Alimento;
 import vinix.catalogo.entities.Categoria;
 import vinix.catalogo.repositories.AlimentoRepository;
@@ -22,8 +23,8 @@ class AlimentoConsultaImplTest {
   @Mock private AlimentoRepository repository;
   @InjectMocks private AlimentoConsultaImpl consulta;
 
-  private final Categoria carnes = Categoria.builder().id(1L).nome("Carnes").compoeMarmita(true).build();
-  private final Categoria bebidas = Categoria.builder().id(2L).nome("Bebidas").compoeMarmita(false).build();
+  private final Categoria carnes = Categoria.builder().id(1L).nome("Carnes").grupo(GrupoAlimentar.CARNE).build();
+  private final Categoria bebidas = Categoria.builder().id(2L).nome("Bebidas").grupo(GrupoAlimentar.BEBIDA).build();
 
   private Alimento alimento(Long id, String nome, Categoria categoria, boolean disponivel) {
     return Alimento.builder().id(id).nome(nome).descricao("Descrição " + nome)
@@ -31,11 +32,11 @@ class AlimentoConsultaImplTest {
   }
 
   @Test
-  void buscarPorId_existente_deveRetornarResumoComDadosDaCategoria() {
+  void buscarPorId_existente_deveRetornarResumoComGrupoDaCategoria() {
     when(repository.findById(10L)).thenReturn(Optional.of(alimento(10L, "Costela", carnes, true)));
 
-    assertThat(consulta.buscarPorId(10L))
-        .contains(new AlimentoResumo(10L, "Costela", "Descrição Costela", true, 1L, "Carnes", true));
+    assertThat(consulta.buscarPorId(10L)).contains(new AlimentoResumo(
+        10L, "Costela", "Descrição Costela", true, 1L, "Carnes", GrupoAlimentar.CARNE));
   }
 
   @Test
@@ -53,8 +54,9 @@ class AlimentoConsultaImplTest {
     List<AlimentoResumo> resultado = consulta.buscarPorIds(Set.of(10L, 11L));
 
     assertThat(resultado).containsExactly(
-        new AlimentoResumo(10L, "Costela", "Descrição Costela", false, 1L, "Carnes", true),
-        new AlimentoResumo(11L, "Coca-Cola", "Descrição Coca-Cola", true, 2L, "Bebidas", false));
+        new AlimentoResumo(10L, "Costela", "Descrição Costela", false, 1L, "Carnes", GrupoAlimentar.CARNE),
+        new AlimentoResumo(11L, "Coca-Cola", "Descrição Coca-Cola", true, 2L, "Bebidas", GrupoAlimentar.BEBIDA));
+    assertThat(resultado.get(1).compoeMarmita()).isFalse();
   }
 
   @Test

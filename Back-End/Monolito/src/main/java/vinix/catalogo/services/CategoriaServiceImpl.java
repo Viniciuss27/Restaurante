@@ -59,7 +59,7 @@ public class CategoriaServiceImpl implements CategoriaService {
     }
 
     verificado.setNome(request.nome());
-    verificado.setCompoeMarmita(request.compoeMarmita());
+    verificado.setGrupo(request.grupo());
     return mapper.response(verificado);
   }
 
@@ -77,8 +77,7 @@ public class CategoriaServiceImpl implements CategoriaService {
   private void verificaAlimentoExistente(Long categoriaId) {
     if (alimentoRepository.existsByCategoriaId(categoriaId)) {
       throw new ConflitoException(
-          "Não foi possível excluir: existem alimentos associados a essa categoria"
-      );
+          "Não foi possível excluir: existem alimentos associados a essa categoria");
     }
   }
 }

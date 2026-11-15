@@ -1,5 +1,6 @@
 package vinix.catalogo.services;
 
+import vinix.catalogo.GrupoAlimentar;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -40,7 +41,7 @@ class AlimentoServiceImplTest {
   @Captor private ArgumentCaptor<Specification<Alimento>> specCaptor;
 
   private Categoria categoria(Long id, String nome) {
-    return Categoria.builder().id(id).nome(nome).build();
+    return Categoria.builder().grupo(GrupoAlimentar.CARNE).id(id).nome(nome).build();
   }
 
   private Alimento alimento(Long id, String nome, Categoria categoria) {

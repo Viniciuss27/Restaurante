@@ -1,5 +1,6 @@
 package vinix.catalogo.services;
 
+import vinix.catalogo.GrupoAlimentar;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -27,7 +28,7 @@ class ProdutoConsultaImplTest {
   @Mock private ProdutoRepository repository;
   @InjectMocks private ProdutoConsultaImpl consulta;
 
-  private final Categoria bebidas = Categoria.builder().id(2L).nome("Bebidas").compoeMarmita(false).build();
+  private final Categoria bebidas = Categoria.builder().id(2L).nome("Bebidas").grupo(GrupoAlimentar.BEBIDA).build();
 
   private Map<Tamanho, BigDecimal> precosDaMarmita() {
     return Map.of(Tamanho.PEQUENA, new BigDecimal("18.00"),

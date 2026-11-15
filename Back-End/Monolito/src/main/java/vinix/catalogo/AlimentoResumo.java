@@ -1,6 +1,6 @@
 package vinix.catalogo;
 
-// A categoria vem junto porque a composição da marmita é validada por categoria
+// A categoria vem junto porque a composição da marmita é validada pelo grupo do alimento
 public record AlimentoResumo(
     Long id,
     String nome,
@@ -8,4 +8,10 @@ public record AlimentoResumo(
     boolean disponivel,
     Long categoriaId,
     String categoriaNome,
-    boolean compoeMarmita) {}
+    GrupoAlimentar grupo) {
+
+  // Derivado do grupo: bebida e sobremesa não entram na marmita
+  public boolean compoeMarmita() {
+    return grupo.compoeMarmita();
+  }
+}

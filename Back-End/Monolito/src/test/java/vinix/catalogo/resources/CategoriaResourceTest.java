@@ -1,5 +1,6 @@
 package vinix.catalogo.resources;
 
+import vinix.catalogo.GrupoAlimentar;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -23,7 +24,7 @@ class CategoriaResourceTest {
   @Mock private CategoriaService service;
   @InjectMocks private CategoriaResource resource;
 
-  private final CategoriaResponseDTO carnes = new CategoriaResponseDTO(1L, "Carnes", true);
+  private final CategoriaResponseDTO carnes = new CategoriaResponseDTO(1L, "Carnes", GrupoAlimentar.CARNE);
 
   @Test
   void listar_deveRetornar200ComAsCategorias() {
@@ -57,7 +58,7 @@ class CategoriaResourceTest {
 
   @Test
   void criar_deveRetornar201ComLocationDaNovaCategoria() {
-    var request = new CategoriaRequestDTO("Carnes", true);
+    var request = new CategoriaRequestDTO("Carnes", GrupoAlimentar.CARNE);
     when(service.criar(request)).thenReturn(carnes);
 
     ResponseEntity<CategoriaResponseDTO> resposta =
@@ -70,7 +71,7 @@ class CategoriaResourceTest {
 
   @Test
   void atualizar_deveRetornar200() {
-    var request = new CategoriaRequestDTO("Carnes", true);
+    var request = new CategoriaRequestDTO("Carnes", GrupoAlimentar.CARNE);
     when(service.atualizar(1L, request)).thenReturn(carnes);
 
     ResponseEntity<CategoriaResponseDTO> resposta = resource.atualizar(1L, request);

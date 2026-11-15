@@ -1,5 +1,6 @@
 package vinix.catalogo.mappers;
 
+import vinix.catalogo.GrupoAlimentar;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,7 @@ class AlimentoMapperTest {
   @Test
   void response_deveAchatarDadosDaCategoria() {
     Alimento alimento = Alimento.builder().id(10L).nome("Costela").descricao("Assada")
-        .categoria(Categoria.builder().id(1L).nome("Carnes").build())
+        .categoria(Categoria.builder().grupo(GrupoAlimentar.CARNE).id(1L).nome("Carnes").build())
         .imagemUrl("http://img/costela.png").disponivel(false).build();
 
     AlimentoResponseDTO dto = mapper.response(alimento);

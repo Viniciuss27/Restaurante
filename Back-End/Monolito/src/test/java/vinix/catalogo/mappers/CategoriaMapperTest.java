@@ -1,5 +1,6 @@
 package vinix.catalogo.mappers;
 
+import vinix.catalogo.GrupoAlimentar;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
@@ -13,14 +14,14 @@ class CategoriaMapperTest {
 
   @Test
   void response_deveCopiarIdENome() {
-    CategoriaResponseDTO dto = mapper.response(Categoria.builder().id(1L).nome("Carnes").build());
+    CategoriaResponseDTO dto = mapper.response(Categoria.builder().grupo(GrupoAlimentar.CARNE).id(1L).nome("Carnes").build());
 
-    assertThat(dto).isEqualTo(new CategoriaResponseDTO(1L, "Carnes", true));
+    assertThat(dto).isEqualTo(new CategoriaResponseDTO(1L, "Carnes", GrupoAlimentar.CARNE));
   }
 
   @Test
   void request_deveCopiarNomeEDeixarIdNulo() {
-    Categoria categoria = mapper.request(new CategoriaRequestDTO("Massas", true));
+    Categoria categoria = mapper.request(new CategoriaRequestDTO("Massas", GrupoAlimentar.CARNE));
 
     assertThat(categoria.getNome()).isEqualTo("Massas");
     assertThat(categoria.getId()).isNull();
@@ -33,17 +34,17 @@ class CategoriaMapperTest {
   }
 
   @Test
-  void response_deveCopiarCompoeMarmita() {
+  void response_deveCopiarGrupo() {
     CategoriaResponseDTO dto = mapper.response(
-        Categoria.builder().id(2L).nome("Bebidas").compoeMarmita(false).build());
+        Categoria.builder().id(2L).nome("Bebidas").grupo(GrupoAlimentar.BEBIDA).build());
 
-    assertThat(dto).isEqualTo(new CategoriaResponseDTO(2L, "Bebidas", false));
+    assertThat(dto).isEqualTo(new CategoriaResponseDTO(2L, "Bebidas", GrupoAlimentar.BEBIDA));
   }
 
   @Test
-  void request_deveCopiarCompoeMarmita() {
-    Categoria categoria = mapper.request(new CategoriaRequestDTO("Bebidas", false));
+  void request_deveCopiarGrupo() {
+    Categoria categoria = mapper.request(new CategoriaRequestDTO("Bebidas", GrupoAlimentar.BEBIDA));
 
-    assertThat(categoria.isCompoeMarmita()).isFalse();
+    assertThat(categoria.getGrupo()).isEqualTo(GrupoAlimentar.BEBIDA);
   }
 }

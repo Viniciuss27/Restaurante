@@ -1,7 +1,10 @@
 package vinix.catalogo.entities;
 
+import vinix.catalogo.GrupoAlimentar;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -28,9 +31,9 @@ public class Categoria {
   @Column(nullable = false, length = 100, unique = true)
   private String nome;
 
-  // Falso para categorias vendidas à parte (bebidas, sobremesas): alimentos que não entram na marmita
-  @Builder.Default
-  @Column(name = "compoe_marmita", nullable = false)
-  private boolean compoeMarmita = true;
+  // grupo estável do alimento (CARNE, ARROZ...): é por ele que as regras da marmita são aplicadas
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false, length = 20)
+  private GrupoAlimentar grupo;
 
 }

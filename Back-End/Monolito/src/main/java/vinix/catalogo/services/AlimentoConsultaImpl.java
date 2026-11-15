@@ -35,6 +35,6 @@ class AlimentoConsultaImpl implements AlimentoConsulta {
     return new AlimentoResumo(
         alimento.getId(), alimento.getNome(), alimento.getDescricao(), alimento.isDisponivel(),
         alimento.getCategoria().getId(), alimento.getCategoria().getNome(),
-        alimento.getCategoria().isCompoeMarmita());
+        alimento.getCategoria().getGrupo());
   }
 }

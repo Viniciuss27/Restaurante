@@ -1,12 +1,13 @@
--- Regra da marmita: no máximo 2 alimentos por categoria. Por isso arroz e feijão são categorias separadas.
-INSERT INTO tb_categorias (nome, compoe_marmita) VALUES
-    ('Arroz',      TRUE),
-    ('Feijão',     TRUE),
-    ('Carnes',     TRUE),
-    ('Massas',     TRUE),
-    ('Saladas',    TRUE),
-    ('Bebidas',    FALSE),
-    ('Sobremesas', FALSE);
+-- Regras da marmita (no domínio de pedidos) são aplicadas por grupo: por isso arroz, feijão e massa são categorias separadas.
+INSERT INTO tb_categorias (nome, grupo) VALUES
+    ('Arroz',           'ARROZ'),
+    ('Feijão',          'FEIJAO'),
+    ('Carnes',          'CARNE'),
+    ('Massas',          'MASSA'),
+    ('Saladas',         'SALADA'),
+    ('Acompanhamentos', 'ACOMPANHAMENTO'),
+    ('Bebidas',         'BEBIDA'),
+    ('Sobremesas',      'SOBREMESA');
 
 INSERT INTO tb_alimentos (nome, descricao, categoria_id, imagem_url)
 SELECT v.nome, v.descricao, c.id, v.imagem_url
@@ -21,7 +22,10 @@ FROM (VALUES
     ('Frango',    'Ensopado',    'Carnes',  '/imagens/frango_ensopado.png'),
     ('Macarrão',  'Parmegiana',  'Massas',  '/imagens/macarrao.jpeg'),
     ('Macarrão',  'Alho e Oleo', 'Massas',  '/imagens/macarrão_alho.jpg'),
-    ('Salada',    'simples',     'Saladas', '/imagens/salada_simples.png')
+    ('Salada',    'simples',     'Saladas', '/imagens/salada_simples.png'),
+    -- exemplos simples para a categoria não ficar vazia (projeto de estudo): ajuste conforme o restaurante
+    ('Farofa',    'simples',     'Acompanhamentos', NULL),
+    ('Vinagrete', 'simples',     'Acompanhamentos', NULL)
 ) AS v (nome, descricao, categoria, imagem_url)
 JOIN tb_categorias c ON c.nome = v.categoria;
 
